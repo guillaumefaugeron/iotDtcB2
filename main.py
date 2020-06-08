@@ -1,6 +1,8 @@
 import json
 import wiotp.sdk.application
 import requests
+import base64
+
 
 
 def myCommandCallback(cmd):
@@ -21,12 +23,11 @@ create_account = input("voulez-vous creer un compte (O/n) : ")
 
 if (create_account.lower() == "o") | (create_account.lower() == "oui") :
     create = 0
+    url_api = "https://vkrqyu.internetofthings.ibmcloud.com/api/v0002/"
+    url_device_DTC = url_api + "device/types/DTC/devices"
+    headers = {'content-type': 'application/json'}
     while create != 1:
-        url_api = "https://vkrqyu.internetofthings.ibmcloud.com/api/v0002/"
-        url_device_DTC = url_api + "device/types/DTC/devices"
-        headers = {'content-type': 'application/json'}
         device_id = input("rentrer le nom du device : ")
-
         myobj = """{"deviceId": "%s"}""" %device_id
         request = requests.post(url_device_DTC, data = myobj, headers=headers,  auth=('a-vkrqyu-lfcnfan1no', '7ubBV0eEX_SAa&)?rN'))
 
@@ -38,9 +39,15 @@ if (create_account.lower() == "o") | (create_account.lower() == "oui") :
 
 
 
-def contact(device1, device2):
-    client.subscribeToDeviceEvents(typeId="DTC", deviceId=device1, eventId="contact")
-    client.subscribeToDeviceEvents(typeId="DTC", deviceId=device2, eventId="contact")
+def contact(name_device1, name_device2):
+    client.subscribeToDeviceEvents(typeId="DTC", deviceId=name_device1, eventId="contact")
+    device1 = {"typeId": "DTC", "deviceId": name_device1}
+    event1 = client.lec.get(device1, "contact")
+    print(event1.deviceId + (base64.b64decode(event1.payload).decode('utf-8')))
+    client.subscribeToDeviceEvents(typeId="DTC", deviceId=name_device2, eventId="contact")
+    device2 = {"typeId": "DTC", "deviceId": name_device2}
+    event2 = client.lec.get(device2, "contact")
+    print(event2.deviceId + (base64.b64decode(event2.payload).decode('utf-8')))
 
 def publishStatus(device, status):
     myData={'status' : status}
@@ -54,8 +61,8 @@ client.connect()
 contact("test1", "test2")
 
 publishStatus("test1", "ok")
-publishStatus("test1", "malade")
-publishStatus("bgdu39", "malade")
+publishStatus("test2", "malade")
+# publishStatus("bgdu39", "malade")
 
 # client.subscribeToDeviceEvents(typeId="DTC",eventId="contact")
 while 1:

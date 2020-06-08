@@ -21,17 +21,27 @@ def AdminSubscribeToAll():
 def MedicalUpdateStatus():
     #Inputs
     myDeviceId = input("Updating citizen status : Please type the ID of the Citizen : ")
-    CitizenTemperature = input("Enter the temperature of the citizen")
-    CitizenDepartement = input("Enter the departement of the citizen")
-    CitizenStatus = input ("Enter the status of the citizen")
+    CitizenTemperature = input("Enter the temperature of the citizen : ")
+    CitizenDepartement = input("Enter the departement of the citizen : ")
+    submited = 0
+    while submited != 1:
+        CitizenStatus = input ("Enter the status of the citizen, 1 : sick , 2 : ok : ")
+        if (int(CitizenStatus) == 1):
+            CitizenStatus ="sick"
+            submited = 1
+        elif (int(CitizenStatus) == 2):
+            CitizenStatus="ok"
+            submited = 1
+        else:
+            print("Wrong number")
 
-    #JSONing Data
-    myDeviceType = "DTC"
-    myData={'temperature' : CitizenTemperature, 'departement' : CitizenDepartement, 'status' : CitizenStatus}
+        #JSONing Data
+        myDeviceType = "DTC"
+        myData={'temperature' : CitizenTemperature, 'departement' : CitizenDepartement, 'status' : CitizenStatus}
 
-    #Publishing
-    client.publishEvent(myDeviceType, myDeviceId, "CitizenStatus", "json", myData)
-    print("Status of "+myDeviceId+" updated with values : "+CitizenTemperature+" for temperature and "+CitizenDepartement+" for departement")
+        #Publishing
+        client.publishEvent(myDeviceType, myDeviceId, "CitizenStatus", "json", myData)
+        print("Status of "+myDeviceId+" updated with values : "+CitizenTemperature+" for temperature and "+CitizenDepartement+" for departement, the status is "+CitizenStatus)
 
 
 # init

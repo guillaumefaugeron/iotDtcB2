@@ -47,7 +47,7 @@ def MedicalUpdateStatus():
 
 
 # init
-myConfig = wiotp.sdk.application.parseConfigFile("default-config.yaml")
+myConfig = wiotp.sdk.application.parseConfigFile("config.yaml")
 client = wiotp.sdk.application.ApplicationClient(config=myConfig, logHandlers=None)
 client.deviceEventCallback = myEventCallback
 client.commandCallback = myCommandCallback

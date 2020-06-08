@@ -19,7 +19,7 @@ client.commandCallback = myCommandCallback
 
 create_account = input("voulez-vous creer un compte (O/n) : ")
 
-if create_account.lower() == "o" or "oui" :
+if (create_account.lower() == "o") | (create_account.lower() == "oui") :
     create = 0
     while create != 1:
         url_api = "https://vkrqyu.internetofthings.ibmcloud.com/api/v0002/"

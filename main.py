@@ -9,7 +9,12 @@ def myEventCallback(event):
     print(str % (event.format, event.eventId, event.device, json.dumps(event.data)))
 
 
-myConfig = wiotp.sdk.application.parseConfigFile("config.yaml")
+# Subrcribe to all DTC devices
+def AdminSubscribeToAll():
+    print("Subscribing to all DTC devices...")
+    client.subscribeToDeviceEvents(typeId="DTC",eventId="CitizenStatus")
+
+myConfig = wiotp.sdk.application.parseConfigFile("default-config.yaml")
 client = wiotp.sdk.application.ApplicationClient(config=myConfig, logHandlers=None)
 client.deviceEventCallback = myEventCallback
 
@@ -17,7 +22,7 @@ client.commandCallback = myCommandCallback
 
 
 client.connect()
-client.subscribeToDeviceEvents(typeId="DTC",eventId="contact")
+AdminSubscribeToAll()
 
 print(client.subscriptionCallback)
 while 1:

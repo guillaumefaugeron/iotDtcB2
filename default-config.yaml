@@ -1,9 +1,7 @@
 identity:
-    appId: zlmz36
-#    typeId: DTC
-#    deviceId: LeroyMerlin
+    appId: 5l9uod
+    # typeId: DTC
+    # deviceId: LeVrai
 auth:
-    key: a-zlmz36-kgn8gepf11
-    token: rWj0gazh5j&RGNwfe&
-
-
+    key: a-5l9uod-rvahundj9b
+    token: MxZ1lyMxHo40_8iipe

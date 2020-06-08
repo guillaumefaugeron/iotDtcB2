@@ -1,11 +1,6 @@
 import json
-import time
-
 import wiotp.sdk.application
-import requests
-import base64
-import sys
-import threading
+
 
 
 def myCommandCallback(cmd):
@@ -46,10 +41,10 @@ def login(token:str,deviceId:str):
         return deviceId
     else:
         while (checkedToken == False):
-            newtoken = input("SAISIR LE BON MDP : ")
+            newtoken = input("\n\n\nSAISIR LE BON MDP : ")
             checkedToken = connect(newtoken,deviceId)
         return deviceId
 
 
 
-print(login("kekel2enul","LeroyMerlin"))
+# print(login("kekel2enul","LeroyMerlin"))

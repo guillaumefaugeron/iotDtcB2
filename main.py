@@ -1,9 +1,31 @@
 import json
+import os
+import json
+from pathlib import Path
+
 import wiotp.sdk.application
 import requests
 import base64
+from login import login
+from dotenv import load_dotenv
 
+print(load_dotenv())
+env_path = Path('.') / '.env'
+
+
+
+
+
+api_key = os.getenv("api_key")
+api_token = os.getenv("api_token")
+orgid = os.getenv("orgid")
+deviceid = ""
 contacts = {}
+user_credentials = {}
+url_api = "https://" + orgid + ".internetofthings.ibmcloud.com/api/v0002/"
+url_device_DTC = url_api + "device/types/DTC/devices"
+headers = {'content-type': 'application/json'}
+
 
 def myCommandCallback(cmd):
     print("Command received: %s" % cmd.data)
@@ -77,16 +99,15 @@ while not mydevice :
     print("Choisir une Option :")
     print("1 : Creer un compte")
     print("2 : Se connecter")
+    print("3 : Je suis médecin")
+    print("4 : Je suis admin")
     option = int(input())
     if option == 1:
         create = 0
-        url_api = "https://vkrqyu.internetofthings.ibmcloud.com/api/v0002/"
-        url_device_DTC = url_api + "device/types/DTC/devices"
-        headers = {'content-type': 'application/json'}
         while create != 1:
-            device_id = input("rentrer le nom du device : ")
+            device_id = input("rentrer le nom du compte : ")
             myobj = """{"deviceId": "%s"}""" %device_id
-            request = requests.post(url_device_DTC, data = myobj, headers=headers,  auth=('a-vkrqyu-lfcnfan1no', '7ubBV0eEX_SAa&)?rN'))
+            request = requests.post(url_device_DTC, data = myobj, headers=headers,  auth=(api_key, api_token))
 
             if request.status_code == 201:
                 create = 1
@@ -95,7 +116,25 @@ while not mydevice :
             else:
                 print(request.text)
     if option == 2:
-        mydevice = input("rentrer le nom de votre device")
+        mydevice = input("rentrer le nom de votre compte")
+        token = input("rentrer votre mdp")
+        print(login(token,mydevice))
+        role = "citoyen"
+        user_credentials = {"role": role, "ID": mydevice}
+    if option == 3:
+        print("\nConnectez vous avec votre compte de médecin :")
+        mydevice = input("rentrer le nom de votre compte")
+        token = input("rentrer votre mdp")
+        print(login(token,mydevice))
+        role = "medecin"
+        user_credentials = {"role": role, "ID": mydevice}
+    if option == 4:
+        print("\nConnectez vous avec votre compte d'admin :")
+        mydevice = input("rentrer le nom de votre compte")
+        token = input("rentrer votre mdp")
+        print(login(token,mydevice))
+        role = "admin"
+        user_credentials = {"role": role, "ID": mydevice}
 
 
 end = 0
@@ -106,6 +145,8 @@ while end != 1:
     print("3 : Publier son statut")
     print("4 : Publier sa temperature")
     print("5 : Quitter")
+    if(user_credentials.get("role") == "medecin"):
+        print("6 : Consulter la liste de suivi mes citoyens")
     options = int(input())
     if options == 1:
         print(contacts)
@@ -121,6 +162,16 @@ while end != 1:
         publishTemp(mydevice, temp)
     if options == 5:
         end = 1
-    
+    if options == 6:
+        myobj = """{"deviceId": "LeroyMerlin"}"""
+        request = requests.get("https://zlmz36.internetofthings.ibmcloud.com/api/v0002/device/types/DTC/devices/LeroyMerlin/events", headers=headers, auth=(api_key, api_token))
+        print(request.status_code)
+
+        response_array = request.json()
+        for dict in response_array:
+            for key in dict:
+                if(dict["eventId"] == "contact"):
+                    content = dict["payload"]
+                    print("Le citoyen à été en contact avec : %s" % (base64.b64decode(content).decode('utf-8')))
 
 client.disconnect()

@@ -16,12 +16,7 @@ client = wiotp.sdk.application.ApplicationClient(config=myConfig, logHandlers=No
 client.deviceEventCallback = myEventCallback
 client.commandCallback = myCommandCallback
 
-# Connect
-client.connect()
 
-
-
-print(client.registry.devices.get("kskdk"))
 create_account = input("voulez-vous creer un compte (O/n) : ")
 
 if create_account.lower() == "o" or "oui" :
@@ -42,6 +37,8 @@ if create_account.lower() == "o" or "oui" :
             print(request.text)
 
 
+# Connect
+client.connect()
 
 
 

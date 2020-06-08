@@ -37,12 +37,28 @@ if (create_account.lower() == "o") | (create_account.lower() == "oui") :
             print(request.text)
 
 
+
+def contact(device1, device2):
+    client.subscribeToDeviceEvents(typeId="DTC", deviceId=device1, eventId="contact")
+    client.subscribeToDeviceEvents(typeId="DTC", deviceId=device2, eventId="contact")
+
+def publishStatus(device, status):
+    myData={'status' : status}
+    client.publishEvent("DTC", device, "contact", "json", myData)
+
+
 # Connect
 client.connect()
 
 
+contact("test1", "test2")
+
+publishStatus("test1", "ok")
+publishStatus("test1", "malade")
+publishStatus("bgdu39", "malade")
 
 # client.subscribeToDeviceEvents(typeId="DTC",eventId="contact")
-
+while 1:
+    a=0
 
 client.disconnect()

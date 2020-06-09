@@ -25,6 +25,7 @@ contacts = {}
 user_credentials = {}
 url_api = "https://" + orgid + ".internetofthings.ibmcloud.com/api/v0002/"
 url_device_DTC = url_api + "device/types/DTC/devices"
+url_delete_device_DTC = url_api + "device/types/DTC/devices/"
 headers = {'content-type': 'application/json'}
 
 
@@ -37,6 +38,9 @@ def suspect(status_contact, name_device):
     my_status = json.loads(base64.b64decode(event.payload).decode('utf-8'))["status"]
     if status_contact == "malade"and my_status != "malade":
         publishStatus(name_device, "suspect")
+
+def deleteDevice(name_device):
+    requests.delete(url_delete_device_DTC + name_device, auth=(api_key, api_token))
 
 def myEventCallback(event):
     contacts[event.deviceId].update(event.data)
@@ -169,6 +173,7 @@ while end != 1:
         print("8 : Suivre le status d'un patient un patient")
     if (user_credentials.get("role") == "admin" ):
         print("9 : Suivre tous les  contacts")
+        print("12 : Supprimer un compte")
     print("10 : Passer en mode écoute des changement d'état")
     print("11 : AFFICHER LES REGLES EN CAS SUSPICION")
 
@@ -224,5 +229,8 @@ while end != 1:
         print("\n       -courbatures")
         print("\n       -parfois diarrhées")
         time.sleep(5)
+    if options == 12:
+        name_device = input("Taper le nom du device à supprimer")
+        deleteDevice(name_device)
 
 client.disconnect()

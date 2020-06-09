@@ -1,4 +1,6 @@
 import json
+import os
+
 import wiotp.sdk.application
 
 
@@ -13,10 +15,10 @@ def myEventCallback(event):
 
 
 def connect(token:str,deviceId:str):
-
+    orgid = os.getenv("orgid")
     myConfig = {
     "identity": {
-        "orgId": "zlmz36",
+        "orgId": orgid,
         "typeId": "DTC",
         "deviceId": deviceId
     },

@@ -105,8 +105,11 @@ while not mydevice :
         create = 0
         while create != 1:
             device_id = input("rentrer le nom du compte : ")
-            myobj = """{"deviceId": "%s"}""" %device_id
+            auth_token = input("rentrer votre mot de passe : ")
+            myobj = "{\"deviceId\": \""+ device_id + "\", \"authToken\": \"" + auth_token + "\"}"
             request = requests.post(url_device_DTC, data = myobj, headers=headers,  auth=(api_key, api_token))
+            print(request)
+            print(request.text)
 
             if request.status_code == 201:
                 create = 1

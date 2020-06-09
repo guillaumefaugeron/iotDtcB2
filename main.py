@@ -48,7 +48,7 @@ def publishStatus(device, status):
 
 def publishTemp(device, temp):
     myData={'temp' : temp}
-    client.publishEvent("DTC", device, "CitizenStatus", "json", myData)
+    client.publishEvent("DTC", device, "Temperature", "json", myData)
 
 
 #Ici c le terter de arnaud

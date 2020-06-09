@@ -31,8 +31,16 @@ headers = {'content-type': 'application/json'}
 def myCommandCallback(cmd):
     print("Command received: %s" % cmd.data)
 
+def suspect(status_contact, name_device):
+    device = {"typeId": "DTC", "deviceId": name_device}
+    event = client.lec.get(device, "CitizenStatus")
+    my_status = json.loads(base64.b64decode(event.payload).decode('utf-8'))["status"]
+    if status_contact == "malade"and my_status != "malade":
+        publishStatus(name_device, "suspect")
+
 def myEventCallback(event):
     contacts[event.deviceId].update(event.data)
+    suspect(contacts[event.deviceId]['status'], mydevice)
     str = "%s event '%s' received from device %s : %s"
     print(str % (event.format, event.eventId, event.deviceId, json.dumps(event.data)))
 
@@ -41,6 +49,7 @@ def contact(name_device):
     device = {"typeId": "DTC", "deviceId": name_device}
     event = client.lec.get(device, "CitizenStatus")
     contacts[name_device] = json.loads(base64.b64decode(event.payload).decode('utf-8'))
+    suspect(contacts[name_device]['status'], mydevice)
 
 def publishStatus(device, status):
     myData={'status' : status}

@@ -132,25 +132,25 @@ while not mydevice :
             else:
                 print(request.text)
     if option == 2:
-        mydevice = input("rentrer le nom de votre compte")
-        token = input("rentrer votre mdp")
+        mydevice = input("rentrer le nom de votre compte : ")
+        token = input("rentrer votre mdp : ")
         print(login(token,mydevice))
         role = "citoyen"
         user_credentials = {"role": role, "ID": mydevice}
         time.sleep(1)
 
     if option == 3:
-        print("\nConnectez vous avec votre compte de médecin :")
-        mydevice = input("rentrer le nom de votre compte")
-        token = input("rentrer votre mdp")
+        print("\nConnectez vous avec votre compte de médecin : ")
+        mydevice = input("rentrer le nom de votre compte : ")
+        token = input("rentrer votre mdp : ")
         print(login(token,mydevice))
         role = "medecin"
         user_credentials = {"role": role, "ID": mydevice}
         time.sleep(1)
     if option == 4:
         print("\nConnectez vous avec votre compte d'admin :")
-        mydevice = input("rentrer le nom de votre compte")
-        token = input("rentrer votre mdp")
+        mydevice = input("rentrer le nom de votre compte : ")
+        token = input("rentrer votre mdp : ")
         print(login(token,mydevice))
         role = "admin"
         user_credentials = {"role": role, "ID": mydevice}

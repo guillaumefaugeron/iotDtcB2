@@ -161,6 +161,7 @@ while end != 1:
     if (user_credentials.get("role") == "admin" ):
         print("9 : Suivre tous les  contacts")
     print("10 : Passer en mode écoute des changement d'état")
+    print("11 : AFFICHER LES REGLES EN CAS SUSPICION")
     options = int(input())
     if options == 1:
         print(contacts)
@@ -200,4 +201,17 @@ while end != 1:
         contact(input("Entrer l'ID du citoyen à suivre"))
     if options == 10:
         print("afficher tt les publish auquel le user est sub")
+    if options == 11:
+        print("Jai des symptômes (toux, fièvre) qui me font penser au COVID-19 je reste à domicile, jévite les contacts, jappelle un médecin avant de me rendre à son cabinet ou jappelle le numéro de permanence de soins de ma région. Je peux également bénéficier dune téléconsultation "
+              "si les symptômes saggravent avec des difficultés respiratoires et signes détouffement, jappelle le SAMU (15) ou jenvoie un message au numéro durgence pour les sourds et malentendants (114).")
+        print("\n       -Les principaux symptômes :")
+        print("\n       -fièvre")
+        print("\n       -toux")
+        print("\n       -fatigue inhabituelle")
+        print("\n       -difficultés respiratoires, étouffements")
+        print("\n       -maux de tête")
+        print("\n       -perte de goût et de lodorat")
+        print("\n       -courbatures")
+        print("\n       -parfois diarrhées")
+        time.sleep(5)
 client.disconnect()

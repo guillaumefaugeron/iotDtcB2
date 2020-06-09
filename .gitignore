@@ -3,3 +3,4 @@ venv
 .vscode
 config.yaml
 .env
+__pycache__

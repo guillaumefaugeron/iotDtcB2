@@ -8,6 +8,7 @@ import requests
 import base64
 from login import login
 from dotenv import load_dotenv
+import time
 
 print(load_dotenv())
 env_path = Path('.') / '.env'
@@ -59,27 +60,29 @@ def AdminSubscribeToAll():
 def MedicalUpdateStatus():
     #Inputs
     myDeviceId = input("Updating citizen status : Please type the ID of the Citizen : ")
-    CitizenTemperature = input("Enter the temperature of the citizen : ")
     CitizenDepartement = input("Enter the departement of the citizen : ")
     submited = 0
     while submited != 1:
-        CitizenStatus = input ("Enter the status of the citizen, 1 : sick , 2 : ok : ")
+        CitizenStatus = input ("Enter le status du citoyen , 1 : malade , 2 : ok , 3 : suspect ")
         if (int(CitizenStatus) == 1):
-            CitizenStatus ="sick"
+            CitizenStatus ="malade"
             submited = 1
         elif (int(CitizenStatus) == 2):
             CitizenStatus="ok"
+            submited = 1
+        elif (int(CitizenStatus) == 3):
+            CitizenStatus="suspect"
             submited = 1
         else:
             print("Wrong number")
 
         #JSONing Data
         myDeviceType = "DTC"
-        myData={'temperature' : CitizenTemperature, 'departement' : CitizenDepartement, 'status' : CitizenStatus}
+        myData={'departement' : CitizenDepartement, 'status' : CitizenStatus}
 
         #Publishing
         client.publishEvent(myDeviceType, myDeviceId, "CitizenStatus", "json", myData)
-        print("Status of "+myDeviceId+" updated with values : "+CitizenTemperature+" for temperature and "+CitizenDepartement+" for departement, the status is "+CitizenStatus)
+        print("Status of "+myDeviceId+" updated with values : " + CitizenDepartement+" for departement, the status is "+CitizenStatus)
 
 
 # init
@@ -88,10 +91,6 @@ client = wiotp.sdk.application.ApplicationClient(config=myConfig, logHandlers=No
 client.deviceEventCallback = myEventCallback
 client.commandCallback = myCommandCallback
 client.connect()
-
-updateStatus = input("Vous souhaitez mettre à jour le status d'un patient ? :")
-if (updateStatus.lower() == "o") | (updateStatus.lower() == "oui"):
-    MedicalUpdateStatus()
 
 mydevice = ""
 
@@ -113,6 +112,7 @@ while not mydevice :
                 create = 1
                 mydevice = device_id
                 print("Compte créé")
+                time.sleep(1)
             else:
                 print(request.text)
     if option == 2:
@@ -121,6 +121,8 @@ while not mydevice :
         print(login(token,mydevice))
         role = "citoyen"
         user_credentials = {"role": role, "ID": mydevice}
+        time.sleep(1)
+
     if option == 3:
         print("\nConnectez vous avec votre compte de médecin :")
         mydevice = input("rentrer le nom de votre compte")
@@ -128,6 +130,7 @@ while not mydevice :
         print(login(token,mydevice))
         role = "medecin"
         user_credentials = {"role": role, "ID": mydevice}
+        time.sleep(1)
     if option == 4:
         print("\nConnectez vous avec votre compte d'admin :")
         mydevice = input("rentrer le nom de votre compte")
@@ -135,18 +138,26 @@ while not mydevice :
         print(login(token,mydevice))
         role = "admin"
         user_credentials = {"role": role, "ID": mydevice}
+        time.sleep(1)
 
 
 end = 0
 while end != 1:
+    time.sleep(1)
     print("Choisir une Option :")
     print("1 : Afficher la liste de mes contacts")
     print("2 : Déclencher un contact")
     print("3 : Publier son statut")
     print("4 : Publier sa temperature")
     print("5 : Quitter")
-    if(user_credentials.get("role") == "medecin"):
+    if(user_credentials.get("role") == "medecin" or user_credentials.get("role") == "admin"):
         print("6 : Consulter la liste de suivi mes citoyens")
+    if (user_credentials.get("role") == "medecin" ):
+        print("7 : Mettre à jour le status d'un patient")
+        print("8 : Suivre le status d'un patient un patient")
+    if (user_credentials.get("role") == "admin" ):
+        print("9 : Suivre tous les  contacts")
+    print("10 : Passer en mode écoute des changement d'état")
     options = int(input())
     if options == 1:
         print(contacts)
@@ -163,15 +174,27 @@ while end != 1:
     if options == 5:
         end = 1
     if options == 6:
-        myobj = """{"deviceId": "LeroyMerlin"}"""
-        request = requests.get("https://zlmz36.internetofthings.ibmcloud.com/api/v0002/device/types/DTC/devices/LeroyMerlin/events", headers=headers, auth=(api_key, api_token))
-        print(request.status_code)
+        device = input("Entrer le nom du citoyen à tracker")
+        request = requests.get("https://zlmz36.internetofthings.ibmcloud.com/api/v0002/device/types/DTC/devices/"+device+"/events", headers=headers, auth=(api_key, api_token))
 
-        response_array = request.json()
-        for dict in response_array:
-            for key in dict:
-                if(dict["eventId"] == "contact"):
-                    content = dict["payload"]
-                    print("Le citoyen à été en contact avec : %s" % (base64.b64decode(content).decode('utf-8')))
-
+        if(request.status_code):
+            response_array = request.json()
+            i=0
+            for dict in response_array:
+                for key in dict:
+                    if(dict["eventId"] == "contact"):
+                        i = i +1
+                        content = dict["payload"]
+                        print("Le citoyen à été en contact avec : %s" % (base64.b64decode(content).decode('utf-8')))
+            print("Nombre de contact du citoyen :"+ str(i))
+        else:
+            print("Citoyen  invalide")
+    if options == 7:
+        MedicalUpdateStatus()
+    if options == 9:
+        AdminSubscribeToAll()
+    if options == 8:
+        contact(input("Entrer l'ID du citoyen à suivre"))
+    if options == 10:
+        print("afficher tt les publish auquel le user est sub")
 client.disconnect()

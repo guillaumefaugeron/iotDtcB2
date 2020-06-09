@@ -160,7 +160,6 @@ while end != 1:
         print("8 : Suivre le status d'un patient un patient")
     if (user_credentials.get("role") == "admin" ):
         print("9 : Suivre tous les  contacts")
-    print("10 : Passer en mode écoute des changement d'état")
     options = int(input())
     if options == 1:
         print(contacts)
@@ -198,6 +197,4 @@ while end != 1:
         AdminSubscribeToAll()
     if options == 8:
         contact(input("Entrer l'ID du citoyen à suivre"))
-    if options == 10:
-        print("afficher tt les publish auquel le user est sub")
 client.disconnect()
